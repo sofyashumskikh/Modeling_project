@@ -20,15 +20,30 @@ B = np.array([[0], [1/(m*L*L)]])
 
 U = ctrb(A, B)
 if rank(U) != A.shape[0]:
-    print("Ошибка: система неуправляема!")
+    print("\nОшибка: система неуправляема!")
     exit()
 else:
-    print("Система управляема, можно применить модальный синтез")
+    print("\nСистема управляема, можно применить модальный синтез")
 
 # Модальный синтез
 poles = np.array([-2, -3])
 K = -place(A, B, poles)
 print("Матрица обратной связи K =", K)
+
+# Валидация: 
+A_closed = A + B @ K
+actual_poles = np.linalg.eigvals(A_closed)
+print("\nВалидация полюсов:")
+print("Заданные полюса:", poles)
+print("Фактические полюса замкнутой системы:", actual_poles)
+
+tolerance = 1e-6
+if np.allclose(sorted(actual_poles), sorted(poles), atol=tolerance):
+    print("Полюса успешно размещены!\n")
+else:
+    print("Ошибка: полюса не соответствуют заданным!")
+    print("Разница:", np.abs(actual_poles - poles))
+
 
 physicsClient = p.connect(p.GUI if guiFlag else p.DIRECT)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
