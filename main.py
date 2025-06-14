@@ -4,7 +4,8 @@ import pybullet_data
 import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
-from control.matlab import place, lqr, ctrb, rank
+from control.matlab import place, lqr, ctrb
+from numpy.linalg import matrix_rank as rank
 
 guiFlag = False
 dt = 1/240
@@ -33,7 +34,7 @@ physicsClient = p.connect(p.GUI if guiFlag else p.DIRECT)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
 p.setGravity(0, 0, -g)
 planeId = p.loadURDF("plane.urdf")
-boxId = p.loadURDF("./simple.urdf.xml", useFixedBase=True)
+boxId = p.loadURDF("simple.urdf.xml", useFixedBase=True)
 
 p.changeDynamics(boxId, 1, linearDamping=0, angularDamping=0)
 p.changeDynamics(boxId, 2, linearDamping=0, angularDamping=0)
